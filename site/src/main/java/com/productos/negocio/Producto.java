@@ -13,8 +13,19 @@ public class Producto {
 	private String nombre;
 	private int cantidad;
 	private double precio;
-	private Byte foto;
 
+	public Producto() {
+		setId(0);
+		setNombre("");
+		setPrecio(0);
+		setCantidad(0);
+	}
+	public Producto (int cod, String desc, float pre, int can) {
+		setId(cod);
+		setNombre(desc);
+		setPrecio(pre);
+		setCantidad(can);
+	}
 	public String consultarTodo()
 	{
 		String sql="SELECT * FROM tb_producto ORDER BY id_pr"; 
@@ -27,6 +38,11 @@ public class Producto {
 						+ "<td>"+rs.getString(3)+"</td>"
 						+ "<td>"+rs.getInt(4)+"</td>"
 						+ "<td>"+rs.getDouble(5)+"</td>"
+						+ "</td>"
+						+ "<td> <a href= BuscarProducto.jsp?cod=" + rs.getInt(1) +
+						"><pre style=\"text-align:center\">Modificar</pre></a></td>"
+						+ "<td> <a href= EliminarProducto.jsp?cod=" + rs.getInt(1) + 
+						" \"><pre style=\"text-align: center\">Eliminar</pre></a></td>"
 						+ "</td></tr>";
 			}
 		} catch (SQLException e) {
@@ -34,6 +50,49 @@ public class Producto {
 		} 
 		tabla+="</table>"; 
 		return tabla;
+	}
+
+	public void ConsulEditarProductos(int cod)	{
+		Conexion obj = new Conexion();
+		String sql="SELECT id_pr, id_cat,descripcion_pr,cantidad_pr,precio_pr FROM tb_producto where id_pr = '" +cod+ "'"; 
+		ResultSet rs = null;
+		try {
+			rs = obj.Consulta(sql);
+			while (rs.next()) {
+				setId(rs.getInt(1));
+				setCantidad(rs.getInt(2));
+				setNombre(rs.getString(3));
+				setCantidad(rs.getInt(4));
+				setPrecio(rs.getFloat(5));
+			}
+		}catch(Exception e) {
+		}
+	}
+
+	public boolean ModificarProducto(Producto mp) {
+		boolean agregado = false;
+		Conexion obj = new Conexion();
+		String sql = "UPDATE tb_producto SET descripcion_pr ='" + mp.getNombre() + "', precio_pr = '" + mp.getPrecio() + "', "
+				+ "cantidad_pr = '" + mp.getCantidad() + "' WHERE \"id_pr\"='" + mp.getId() + "'"; 
+		try {
+			obj.Ejecutar(sql);
+			agregado = true;
+		} catch (Exception e) {
+			agregado = false;
+		}
+		return agregado;
+	}
+	public boolean EliminarProducto(int cod) {
+		boolean f = false;
+		Conexion con = new Conexion();
+		String sql = "delete from tb_producto where id_pr='" + cod + "'";
+		try {
+			con.Ejecutar(sql);
+			f = true;
+		} catch (Exception e) {
+			f = false;
+		}
+		return f;
 	}
 
 	public String buscarProductoCategoria(int cat) {
@@ -57,7 +116,7 @@ public class Producto {
 	}
 
 	public String ingresarProducto(int id, int cat,String nombre, 
-		int cantidad, double precio) {
+			int cantidad, double precio) {
 		String result="";
 		Conexion con=new Conexion(); 
 		PreparedStatement pr=null;
@@ -105,12 +164,6 @@ public class Producto {
 	}
 	public void setPrecio(double precio) {
 		this.precio = precio;
-	}
-	public Byte getFoto() {
-		return foto;
-	}
-	public void setFoto(Byte foto) {
-		this.foto = foto;
 	}
 	public int getCantidad() {
 		return cantidad;
