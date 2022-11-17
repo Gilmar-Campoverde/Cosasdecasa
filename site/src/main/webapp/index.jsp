@@ -12,6 +12,7 @@
 		<a class="active" href="verProd.jsp">Ver Productos</a>
 		<a href="categoria.jsp">Buscar Por Categoria</a>
 		<a href="nuevoProducto.jsp">Registrar Productos</a>
+		<a href="registroUsu.jsp">Registrar Usuarios</a>
 	</nav>
 	<div class="agrupar">
 	<section>
